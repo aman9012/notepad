@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>keep notes</title>
+    <style>
+        * {
+            margin: 0px;
+            padding: 0px;
+            box-sizing: border-box;
+        }
+
+        #main {
+            width: 100%;
+            height: max-content;
+            background-color: aliceblue;
+            display: flex;
+            flex-wrap: wrap;
+            padding: 25px;
+        }
+
+        #addBtn {
+            position: fixed;
+            background-color: rgb(52, 33, 33);
+            color: white;
+            padding: 5px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            top: 20px;
+            right: 20px;
+        }
+
+        .fas {
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .a {
+            margin: 10px 10px 4px 5px;
+            font-size: 2rem;
+        }
+        .a:hover{
+            color: red;
+        }
+
+        .notepad {
+            width: 300px;
+            height: 350px;
+            background-color: white;
+            box-shadow: 0px 0px 10px 2px black;
+            margin: 20px;
+            overflow: hidden;
+        }
+
+        .tools {
+            background-color: cadetblue;
+            display: flex;
+            justify-content: end;
+        }
+
+        .textarea {
+            width: 100%;
+            height: 300px;
+            border: none;
+            resize: none;
+            padding: 10px;
+            font-size: 1.3rem;
+        }
+
+        .textarea:focus {
+            outline: 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <button id="addBtn">
+        Add Note
+        <i class="fas fa-plus"></i>
+    </button>
+    
+    <div id="main">
+        <!-- <div class="notepad">
+            <div class="tools">
+                <i class="fa-regular a fa-floppy-disk"></i>
+                <i class="fa-solid a fa-trash"></i>
+            </div>
+            <textarea class="textarea" autofocus=""></textarea> -->
+        </div> 
+    </div>
+</body>
+<script src="https://kit.fontawesome.com/1e2205a97a.js" crossorigin="anonymous"></script>
+<script>
+    const addBtn = document.querySelector("#addBtn")
+    const main = document.querySelector("#main")
+    addBtn.addEventListener("click",
+        function () {
+            addNote();
+        })
+
+    const addNote = (text = "") => {
+        const note = document.createElement("div");
+        note.classList.add("notepad")
+        note.innerHTML = `
+        <div class="tools">
+                <i class="save fa-regular a fa-floppy-disk"></i>
+                <i class="delete fa-solid a fa-trash"></i>
+        </div>
+        <textarea class="textarea" autofocus="">${text}</textarea>
+        </div>
+        `
+        note.querySelector(".delete").addEventListener(
+            "click",
+            function () {
+                note.remove();
+                saveNote();
+            })
+
+        note.querySelector(".save").addEventListener(
+            "click",
+            function () {
+                saveNote();
+            })
+        saveNote();
+        main.appendChild(note);
+    }
+
+    const saveNote = () => {
+        const notes = document.querySelectorAll(".notepad textarea");
+        const Data = [];
+        notes.forEach((note) => {
+            Data.push(note.value)
+        })
+        // console.log(Data)
+
+        if (Data.length === 0) {
+            localStorage.removeItem("notes")
+        } else {
+            localStorage.setItem("notes", JSON.stringify(Data))
+        }
+
+    }
+
+    aman();
+    function aman() {
+        const lsdata = JSON.parse(localStorage.getItem("notes"))
+        if (lsdata === null) {
+            addNote();
+        }
+        else {
+            lsdata.forEach(
+                (lsdata) => {
+                    addNote(lsdata)
+                }
+            )
+        }
+        saveNote();
+    }
+
+
+</script>
+
+</html>
